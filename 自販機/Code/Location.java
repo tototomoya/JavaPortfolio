@@ -6,7 +6,8 @@ import java.util.*;
 
 public class Location extends ManageMoney{
 
-    //single tone
+    //single tone(thread safe)
+	//httpのようなステートレスなプログラムではないので使用しました
     public static A get_location(String location){
         return A.get_instance();
     }
@@ -29,11 +30,10 @@ public class Location extends ManageMoney{
         System.out.println(vending.get(name).num);
     }
 
-    public void readNameList(String[] List) {
+    public void readItemsList(String[] List) {
         for (String name : List) {
             Item item = new Item(name, 100, 1, false);
             add_item(item);
         }
     }
-
 }
