@@ -7,7 +7,7 @@ import java.util.*;
 public class Location extends ManageMoney{
 
     //single tone(thread safe)
-	//httpのようなステートレスなプログラムではないので使用しました
+	//webアプリのようなステートレスなプログラムではないので使用しました
     public static A get_location(String location){
         return A.get_instance();
     }
