@@ -1,7 +1,6 @@
 package お金;
 
-public class Money {
-    
+abstract class Money {
     protected int type;
     protected int num = 0;
 
