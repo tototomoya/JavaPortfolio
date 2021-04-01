@@ -5,3 +5,4 @@ public class Hyaku extends Money {
         super.type = 100;
     }
 }
+

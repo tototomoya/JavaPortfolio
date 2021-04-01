@@ -1,3 +1,4 @@
 *.class
 memo
 git.sh
+.netrc
