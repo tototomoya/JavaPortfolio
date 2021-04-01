@@ -1,6 +1,6 @@
-package 商品;
+package 自販機;
 
-public class Item {
+class Item {
 
     public String name;
     public int value;
@@ -14,15 +14,3 @@ public class Item {
         this.hot = hot;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
