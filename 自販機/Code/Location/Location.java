@@ -3,7 +3,9 @@ package 自販機;
 import java.util.*;
 import java.io.*;
 
-abstract class Location extends ManageMoney {}
+abstract class Location extends ManageMoney {
+	public String locationName;
+}
 
 class ManageMoney extends ManageItem {
 
