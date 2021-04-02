@@ -15,6 +15,8 @@ class A extends Location {
     public static A get_instance(){
 		// 自販機の商品データ読み込み
 		instance.readItemsList("itemsList.csv");
+
+		instance.locationName = "A";
         return instance;
     }
 }
