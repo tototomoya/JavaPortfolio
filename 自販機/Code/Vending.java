@@ -18,30 +18,51 @@ class User {
 	}
 	
 	private Location l;
+	Console console = System.console();
 
 	User(Location l) {
 		this.l = l; 
 	}
 
 	public void pay() {
-		Console console = System.console();
 		String input = console.readLine("お金を入れてください: ");
 		String[] inputList = input.split(" ", -1); 
 		
 		for (String type: inputList){
 			coin.put(type, coin.get(type) + 1);
 		}
-		
-		paid();
+		choiseItem();
+		// paid();
 	}
 
-	private void paid() {
-		l.hyaku.add(
-			coin.get("100").intValue()
-		);
+		public void choiseItem() {
+			String input = 
+			console.readLine("商品を選択してください: ");
+			Object value = l.getValue(input);
+			choiseItem_(value);
+		}
 
-		System.out.println(l.hyaku.sum());		
-	}
+			private void choiseItem_(Object value) {
+				if (value.getClass().getName() 
+				== "java.lang.String") {
+					System.out.println(value);
+					choiseItem();
+					return;
+				}
+				Integer valueInteger = (Integer)value;
+				System.out.println(valueInteger.intValue());
+			}
+
+		private void paid() {
+			l.hyaku.add(
+				coin.get("100").intValue()
+			);
+			l.sen.add(
+				coin.get("1000").intValue()
+			);
+
+			System.out.println(l.locationName + ":" + l.hyaku.sum() + l.sen.sum());		
+		}
 
 }
 
@@ -50,9 +71,12 @@ public class Vending {
     public static void main(String[] args) {
         A a = A.get_instance();
         A b = A.get_instance();
-        a.hyaku.add(4);
 
         User u = new User(a);
         u.pay();
+
+		User uu = new User(a);
+        uu.pay();
+
     }
 }

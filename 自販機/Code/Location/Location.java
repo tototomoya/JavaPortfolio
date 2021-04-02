@@ -72,4 +72,14 @@ class ManageItem {
         System.out.println(vending.get(name).num);
     }
 
+	public Object getValue(String name) {
+		if (vending.get(name) == null) {
+			return "商品が存在しません。";
+		}
+		if (vending.get(name).num == 0) {
+			return "売り切れです。";
+		}
+		
+		return new Integer(vending.get(name).value);
+	} 
 }
