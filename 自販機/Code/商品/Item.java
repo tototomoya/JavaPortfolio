@@ -13,4 +13,8 @@ class Item {
         this.num = num;
         this.hot = hot;
     }
+
+	public int getValue() {
+		return value;
+	}
 }
