@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.function.*;
 
 class User {
-	
+
 	private Map<String, Integer> coin = 
 	new HashMap<String, Integer>();
 	{	
@@ -18,41 +18,155 @@ class User {
 	}
 	
 	private Location l;
+	Console console = System.console();
 
-	User(Location l) {
-		this.l = l; 
+	// 実行時引数
+	String inputCoin;
+	String inputLocationName;
+	String inputChoiseItemName;
+
+	User(String l, String c, String n) {
+		inputCoin = c; 
+		inputLocationName = l;
+		inputChoiseItemName = n;
+		
+		choiseVending();
 	}
+		
+		private void choiseVending() {
+			try {
+
+				switch(inputLocationName) {
+					case "A":
+						l = A.getInstance();
+						break;
+					case "B":
+						l = B.getInstance();
+						break;
+				}
+				
+			} catch (ExceptionInInitializerError e) {
+				System.out.println("原因: " + e.getCause());
+			}
+		}
 
 	public void pay() {
-		Console console = System.console();
-		String input = console.readLine("お金を入れてください: ");
-		String[] inputList = input.split(" ", -1); 
+		String[] inputCoin_ = inputCoin.split(" ", -1); 
 		
-		for (String type: inputList){
+		for (String type: inputCoin_){
 			coin.put(type, coin.get(type) + 1);
 		}
-		
+		choiseItem();
 		paid();
 	}
+		public void choiseItem() {
+			Object value = l.getValue(inputChoiseItemName);
+			choiseItem_(value);
+		}
 
-	private void paid() {
-		l.hyaku.add(
-			coin.get("100").intValue()
-		);
+			private void choiseItem_(Object value) {
+				if (value.getClass().getName() 
+				== "java.lang.String") {
+					System.out.println(value);
+					return;
+				}
+				Integer valueInteger = (Integer)value;
+				System.out.println(
+					"お客様が入れたお金: " 
+					+ valueInteger.intValue()
+				);
+			}
 
-		System.out.println(l.hyaku.sum());		
-	}
+		private void paid() {
+			l.ju.add(
+				coinNum("10")
+			);
+			l.go_ju.add(
+				coinNum("50")
+			);
+			l.hyaku.add(
+				coinNum("100")
+			);
+			l.go_hyaku.add(
+				coinNum("500")
+			);
+			l.sen.add(
+				coinNum("1000")
+			);
 
+			System.out.println(
+				l.locationName + ":" + coinSum()
+			);		
+		}
+
+			private int coinNum(String type) {
+				return coin.get(type).intValue();
+			}
+			private int coinSum() {
+				
+				return 
+				l.ju.sum() + l.go_ju.sum() + l.hyaku.sum() + l.go_hyaku.sum() + l.sen.sum();
+			}
 }
 
+/*
+
+Locationごとにスレッドを分ける
+
+*/
+abstract class UserLocation extends Thread {
+	public String inputCoin;
+	public String inputLocationName;
+	public String inputItemName;
+
+	@Override
+	public void run() {
+		User user = new User(
+			inputLocationName,
+			inputCoin,
+			inputItemName
+		);
+		user.pay();
+	}
+}
+	class LocationA extends UserLocation {
+		public LocationA(String c, String n) {
+			super.inputLocationName = "A";
+
+			super.inputCoin = c;
+			super.inputItemName = n;
+		}
+	}
+	class LocationB extends UserLocation {
+		public LocationB(String c, String n) {
+			super.inputLocationName = "B";
+
+			super.inputCoin = c;
+			super.inputItemName = n;
+		}
+	}
+
 public class Vending {
-
     public static void main(String[] args) {
-        A a = A.get_instance();
-        A b = A.get_instance();
-        a.hyaku.add(4);
+		
+		String[][] s = {
+			{"10 10 100", "コーラ"},
+			{"10 10 100", "コーラ"},
+			{"10 10 100", "コーラ"},
+			{"10 10 100", "コーラ"}
+		};
 
-        User u = new User(a);
-        u.pay();
+		for (String[] ss : s) {
+			try {
+				LocationA a = 
+				new LocationA(ss[0], ss[1]);
+				LocationB b = 
+				new LocationB(ss[0], ss[1]);
+				a.start(); b.start();
+				a.join(); b.join();
+			} catch (InterruptedException e) {
+				System.out.println("システムエラーです。");
+			}
+		}
     }
 }
