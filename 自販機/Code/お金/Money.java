@@ -29,18 +29,6 @@ abstract class Money {
     }
 }
 
-class Hyaku extends Money {
-    public Hyaku(){
-        super.type = 100;
-    }
-}
-
-class Sen extends Money {
-    public Sen(){
-        super.type = 1000;
-    }
-}
-
 class Ju extends Money {
     public Ju(){
         super.type = 10;
@@ -51,8 +39,19 @@ class Go_ju extends Money {
         super.type = 50;
     }
 }
+class Hyaku extends Money {
+    public Hyaku(){
+        super.type = 100;
+    }
+}
 class Go_hyaku extends Money {
     public Go_hyaku(){
         super.type = 500;
     }
 }
+class Sen extends Money {
+    public Sen(){
+        super.type = 1000;
+    }
+}
+
