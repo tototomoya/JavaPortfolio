@@ -12,11 +12,13 @@ class A extends Location {
 	*/
     private static A instance = new A();
     private A(){}
-    public static A get_instance(){
+	static {
 		// 自販機の商品データ読み込み
-		instance.readItemsList("itemsList.csv");
-
+		instance.readItemsList("A_itemsList.csv");
 		instance.locationName = "A";
+	}
+
+    public static A getInstance(){
         return instance;
     }
 }

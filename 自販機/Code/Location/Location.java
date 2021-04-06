@@ -4,16 +4,93 @@ import java.util.*;
 import java.io.*;
 
 abstract class Location extends ManageMoney {
+
 	public String locationName;
+
+	public void printVendingStatus() {
+
+		System.out.println(
+			locationName + "の現在の状態: \n" + "\n" + 
+			"残金: " + super.sumMoney() + "\n"
+		);
+
+		super.showItems();
+
+	}
+
 }
 
 class ManageMoney extends ManageItem {
 
-    public Sen sen = new Sen();
-    public Go_hyaku go_hyaku = new Go_hyaku();
-    public Hyaku hyaku = new Hyaku();
-    public Go_ju go_ju = new Go_ju();
     public Ju ju = new Ju();
+    public Go_ju go_ju = new Go_ju();
+    public Hyaku hyaku = new Hyaku();
+    public Go_hyaku go_hyaku = new Go_hyaku();
+    public Sen sen = new Sen();
+
+	public int sumMoney() {
+		return 
+		ju.sum() + go_ju.sum() + hyaku.sum() 
+		+ go_hyaku.sum() + sen.sum(); 
+	}
+
+// お釣りの計算
+	public Map<String, Integer> change (int change) {
+		Map<String, Integer> coin = new HashMap<String, Integer>();
+
+		coin.put("10", 0);
+		coin.put("50", 0);
+		coin.put("100", 0);
+		coin.put("500", 0);
+		coin.put("1000", 0);
+
+		return change_(change, coin);
+	}
+
+		public Map<String, Integer> change_(int change, Map<String, Integer> coin) {
+
+			if (change == 0) {
+				return coin;
+			}
+
+			if (change >= 1000) {
+				sen.subtract();
+				coin.put("1000", coin.get("1000").intValue() + 1);
+				change = change - 1000;
+				return change_(change, coin);
+			}
+
+			if (change >= 500) {
+				go_hyaku.subtract();
+				coin.put("500", coin.get("500").intValue() + 1);
+				change = change - 500;
+				return change_(change, coin);
+			}
+
+			if (change >= 100) {
+				hyaku.subtract();
+				coin.put("100", coin.get("100").intValue() + 1);
+				change = change - 100;
+				return change_(change, coin);
+			}
+
+			if (change >= 50) {
+				go_ju.subtract();
+				coin.put("50", coin.get("50").intValue() + 1);
+				change = change - 50;
+				return change_(change, coin);
+			}
+
+			if (change >= 10) {
+				ju.subtract();
+				coin.put("10", coin.get("10").intValue() + 1);
+				change = change - 10;
+				return change_(change, coin);
+			}
+
+			//ここは実行されない
+			return coin;
+		}
 
     // public void coin_config(int[] List) {
     //     sen = List[0];
@@ -60,26 +137,38 @@ class ManageItem {
         vending.put(item.name, item);
     }
 
-    // public void show_items() {
-    //     Enumeration e = vending.keys();
-    //     while (e.hasMoreElements()) {
-    //         System.out.println(e.nextElement());
-    //     }      
-    // }
 
-    public void addItemNum(String name, int num) {
-        vending.get(name).num += num;
-        System.out.println(vending.get(name).num);
+    public void showItems() {
+		
+		Set itemNameSet = vending.keySet();
+
+		for (Object name : itemNameSet) {
+            System.out.println(
+				
+				"商品名 :" +
+				vending.get((String)name).name + "\n" +
+
+				"在庫: " +
+				vending.get((String)name).num + "\n"
+
+			);
+		}
     }
 
-	public Object getValue(String name) {
+    public void drawItemNum(String name) {
+		vending.get(name).drawItemNum();
+    }
+
+	public Object getItem(String name) {
+
 		if (vending.get(name) == null) {
 			return "商品が存在しません。";
 		}
+
 		if (vending.get(name).num == 0) {
 			return "売り切れです。";
 		}
 		
-		return new Integer(vending.get(name).value);
-	} 
+		return vending.get(name);
+	}
 }

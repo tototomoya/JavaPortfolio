@@ -14,7 +14,7 @@ class Item {
         this.hot = hot;
     }
 
-	public int getValue() {
-		return value;
+	public void drawItemNum() {
+		this.num = this.num - 1;
 	}
 }
