@@ -129,7 +129,7 @@ class ManageItem {
 			br.close();
 
 		} catch (IOException ex) {
-			System.out.println("ファイルがないです");
+			System.out.println("ファイルがないです。");
 		}
 	}
 
