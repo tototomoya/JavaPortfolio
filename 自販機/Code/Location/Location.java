@@ -167,7 +167,7 @@ class ManageItem {
 		if (vending.get(name).num == 0) {
 			return "売り切れです。";
 		}
-		
+
 		return vending.get(name);
 	}
 }
