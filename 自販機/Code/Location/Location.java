@@ -132,11 +132,9 @@ class ManageItem {
 			System.out.println("ファイルがないです");
 		}
 	}
-
 	public void addItem(Item item) {
 		vending.put(item.name, item);
     }
-
 
     public void showItems() {
 		
