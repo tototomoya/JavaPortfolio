@@ -79,7 +79,7 @@ class ManageItem {
 		if (vending.get(name).num == 0) {
 			return "売り切れです。";
 		}
-		
+
 		return new Integer(vending.get(name).value);
 	} 
 }
