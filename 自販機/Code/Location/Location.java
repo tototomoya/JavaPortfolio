@@ -17,7 +17,6 @@ abstract class Location extends ManageMoney {
 		super.showItems();
 
 	}
-
 }
 
 class ManageMoney extends ManageItem {
@@ -137,12 +136,12 @@ class ManageItem {
 		vending.put(item.name, item);
 	}
 
-    public void showItems() {
+	public void showItems() {
 		
 		Set itemNameSet = vending.keySet();
 
 		for (Object name : itemNameSet) {
-            System.out.println(
+			System.out.println(
 				
 				"商品名 :" +
 				vending.get((String)name).name + "\n" +
@@ -152,7 +151,7 @@ class ManageItem {
 
 			);
 		}
-    }
+	}
 
 	public void drawItemNum(String name) {
 		vending.get(name).drawItemNum();
