@@ -134,7 +134,7 @@ class ManageItem {
 	}
 
 	public void addItem(Item item) {
-        vending.put(item.name, item);
+		vending.put(item.name, item);
     }
 
 
@@ -155,9 +155,9 @@ class ManageItem {
 		}
     }
 
-    public void drawItemNum(String name) {
+	public void drawItemNum(String name) {
 		vending.get(name).drawItemNum();
-    }
+	}
 
 	public Object getItem(String name) {
 
