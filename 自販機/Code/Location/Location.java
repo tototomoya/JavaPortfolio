@@ -171,3 +171,4 @@ class ManageItem {
 		return vending.get(name);
 	}
 }
+
