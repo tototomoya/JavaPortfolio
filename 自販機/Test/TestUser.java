@@ -20,7 +20,7 @@ public class TestUser extends User {
 		setItem("コーラ");
 	}
 
-	@Test
+    @Test
     public void testMessage() {
 		System.out.println("Test: 自販機の不正選択、商品の不正選択、投入金不足に対するメッセージクラスの動作テスト\n");
 		
