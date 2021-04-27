@@ -5,21 +5,18 @@ import java.io.*;
 
 abstract class Location extends ManageMoney {
 
-	public String locationName;
+	protected String locationName;
 
 	public void printVendingStatus() {
-
 		System.out.println(
 			locationName + "の現在の状態: \n" + "\n" + 
 			"残金: " + super.sumMoney() + "\n"
 		);
-
 		super.showItems();
-
 	}
 }
 
-class ManageMoney extends ManageItem {
+class ManageMoney extends ManageItem implements Cloneable {
 
     public Ju ju = new Ju();
     public Go_ju go_ju = new Go_ju();
@@ -33,72 +30,161 @@ class ManageMoney extends ManageItem {
 		+ go_hyaku.sum() + sen.sum(); 
 	}
 
-// お釣りの計算
-	public Map<String, Integer> change (int change) {
-		Map<String, Integer> coin = new HashMap<String, Integer>();
+// トランザクション失敗時の復元処理
 
+	private ManageMoney preMoney;
+
+		public void saveMoney(ManageMoney m) {
+			preMoney = new ManageMoney();
+			preMoney.ju.setNum(
+				m.ju.getNum()
+			);
+			
+			preMoney.go_ju.setNum(
+				m.go_ju.getNum()
+			);
+			
+			preMoney.hyaku.setNum(
+				m.hyaku.getNum()
+			);
+
+			preMoney.go_hyaku.setNum(
+				m.go_hyaku.getNum()
+			);
+			
+			preMoney.sen.setNum(
+				m.sen.getNum()
+			);
+		}
+
+		public void coinReset() {
+			if (preMoney == null) {
+				preMoney = new ManageMoney();
+			}
+
+			ju.setNum(
+				preMoney.ju.getNum()
+			);
+			
+			go_ju.setNum(
+				preMoney.go_ju.getNum()
+			);
+			
+			hyaku.setNum(
+				preMoney.hyaku.getNum()
+			);
+
+			go_hyaku.setNum(
+				preMoney.go_hyaku.getNum()
+			);
+			
+			sen.setNum(
+				preMoney.sen.getNum()
+			);
+		}
+
+// お釣りの計算
+
+	private Map<String, Integer> coin = new HashMap<String, Integer>();
+	{
 		coin.put("10", 0);
 		coin.put("50", 0);
 		coin.put("100", 0);
 		coin.put("500", 0);
 		coin.put("1000", 0);
-
-		return change_(change, coin);
 	}
 
-		public Map<String, Integer> change_(int change, Map<String, Integer> coin) {
+	private int next = -1;
 
-			if (change == 0) {
-				return coin;
-			}
+	public Map<String, Integer> change(int change) {
 
-			if (change >= 1000) {
-				sen.subtract();
-				coin.put("1000", coin.get("1000").intValue() + 1);
-				change = change - 1000;
-				return change_(change, coin);
-			}
-
-			if (change >= 500) {
-				go_hyaku.subtract();
-				coin.put("500", coin.get("500").intValue() + 1);
-				change = change - 500;
-				return change_(change, coin);
-			}
-
-			if (change >= 100) {
-				hyaku.subtract();
-				coin.put("100", coin.get("100").intValue() + 1);
-				change = change - 100;
-				return change_(change, coin);
-			}
-
-			if (change >= 50) {
-				go_ju.subtract();
-				coin.put("50", coin.get("50").intValue() + 1);
-				change = change - 50;
-				return change_(change, coin);
-			}
-
-			if (change >= 10) {
-				ju.subtract();
-				coin.put("10", coin.get("10").intValue() + 1);
-				change = change - 10;
-				return change_(change, coin);
-			}
-
-			//ここは実行されない
+		if (change == 0) {
+			next = -1;
 			return coin;
 		}
 
-    // public void coin_config(int[] List) {
-    //     sen = List[0];
-    //     go_hyaku = List[1];
-    //     hyaku = List[2];
-    //     go_ju = List[3];
-    //     ju = List[4];
-    // }
+		if (next == -1 && change >= 1000) {
+			if (sen.subtract()) {
+				coin.put("1000", coin.get("1000").intValue() + 1);
+				change = change - 1000;
+
+				return change(change);
+			}
+			
+			next = 500;
+			
+			return change(change);
+		}
+
+		if (next == -1 && change >= 500 || next == 500) {
+			if (go_hyaku.subtract()) {
+				coin.put("500", coin.get("500").intValue() + 1);
+				change = change - 500;
+
+				return change(change);
+			}
+
+			next = 100;
+
+			return change(change);
+		}
+
+		if (next == -1 && change >= 100 || next == 100) {
+			if(hyaku.subtract()){
+				coin.put("100", coin.get("100").intValue() + 1);
+				change = change - 100;
+				
+				return change(change);
+			}
+
+			next = 50;
+			
+			return change(change);
+		}
+
+		if (next == -1 && change >= 50 || next == 50) {
+			if (go_ju.subtract()){
+				coin.put("50", coin.get("50").intValue() + 1);
+				change = change - 50;
+
+				return change(change);
+			}
+
+			next = 10;
+
+			return change(change);
+		}
+
+		if (change >= 10) {
+			
+			if (ju.subtract()) {
+			
+				coin.put("10", coin.get("10").intValue() + 1);
+				change = change - 10;
+
+				return change(change);
+			}
+			
+			next = -1;
+
+			Message.setMessage(
+				new ManageMoneyException("お釣りが不足してます。")
+			);
+		}
+
+		//ここは実行されない
+		return coin;
+	}
+
 }
+
+	class ManageMoneyException extends Throwable {
+
+		ManageMoneyException(String msg){
+			super(msg);
+		}
+
+	}
 
 class ManageItem {
 
@@ -110,6 +196,7 @@ class ManageItem {
 			new FileReader(
 				"./自販機/Code/Location/" + filename
 			);
+
 			BufferedReader br = new BufferedReader(fr);
 			
 			String line;
@@ -128,46 +215,73 @@ class ManageItem {
 			br.close();
 
 		} catch (IOException ex) {
-			System.out.println("ファイルがないです。");
+			System.out.println("ファイルがないです");
 		}
 	}
 
 	public void addItem(Item item) {
-		vending.put(item.name, item);
-	}
+        vending.put(item.getName(), item);
+    }
 
-	public void showItems() {
+
+    public void showItems() {
 		
 		Set itemNameSet = vending.keySet();
 
 		for (Object name : itemNameSet) {
-			System.out.println(
+            System.out.println(
 				
 				"商品名 :" +
-				vending.get((String)name).name + "\n" +
+				vending.get((String)name).getName() + "\n" +
 
 				"在庫: " +
-				vending.get((String)name).num + "\n"
+				vending.get((String)name).getNum() + "\n"
 
 			);
 		}
-	}
+    }
 
-	public void drawItemNum(String name) {
+    public void reduceItemNum(String name) {
 		vending.get(name).drawItemNum();
-	}
+    }
 
-	public Object getItem(String name) {
+// お客様が選択した商品インスタンスを保持
 
-		if (vending.get(name) == null) {
-			return "商品が存在しません。";
+	Item selectItem;
+
+		public Item getItem(String name) {
+			return selectItem;
 		}
 
-		if (vending.get(name).num == 0) {
-			return "売り切れです。";
+		public boolean setItem(String name) {
+			if (checkItem(name)) {
+				selectItem = vending.get(name);
+				return true;
+			}
+
+			return false;
 		}
 
-		return vending.get(name);
-	}
+			public boolean checkItem(String name) {
+				Item item = vending.get(name);
+
+				if (item == null) {
+					Message.setMessage(
+						new ManageItemException(
+							"商品" + name + "が存在しません。"
+						)
+					);
+					return false;
+				}
+
+				if (item.getNum() == 0) {
+					Message.setMessage(
+						new ManageItemException( name + "は売り切れです。")
+					);
+					return false;
+				}
+
+				return true;
+			}
 }
 
