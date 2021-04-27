@@ -4,7 +4,7 @@ ReplIt(オンライン実行環境)で動作確認しています。
     
         小銭: 10,50,100,500,1000
         商品: name, value, num, HotOrCool
-        自販機: LocationA, LocationB, LocationC
+        自販機: LocationA, LocationB
     
   1, 初期状態: 複数の自販機にお釣りの用の小銭と、商品を補充
     
