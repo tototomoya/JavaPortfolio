@@ -3,7 +3,7 @@ import java.lang.*;
 import java.io.*;
 import java.util.*;
 
-// テスト動作の確認を別のプロセスで行います。
+// MainClassを実行するだけでテスト動作の確認が出来るようにしています。
 class Test {
 
 	static final List<String> command = 
@@ -17,7 +17,7 @@ class Test {
 		try {
 			process(command);
 		} catch (Throwable e) {
-			System.out.println("startTest()が実行できません。");
+			System.out.println("startTestProcess()が実行できません。");
 		} 
 	}
 	
