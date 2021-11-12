@@ -21,3 +21,6 @@
         Item - 商品クラスです。
         
         Message - ロギング、エラーレポートクラスです。    
+
+下記のURLからコードの確認、実行ができます。
+https://replit.com/@hitabacokyou/JavaPortfolio?v=1
