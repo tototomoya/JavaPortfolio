@@ -283,5 +283,12 @@ class ManageItem {
 
 				return true;
 			}
+	
+	class ManageItemException extends Throwable {
+
+		ManageItemException(String msg){
+			super(msg);
+		}
+	}
 }
 
