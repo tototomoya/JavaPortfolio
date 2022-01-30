@@ -20,7 +20,7 @@
         
         Item - 商品クラスです。
         
-Message（StaticClass） - ロギング、エラーレポートクラスです。    
+    Message（StaticClass） - ロギング、エラーレポートクラスです。    
 
 下記のURLからコードの確認、実行ができます。
 https://replit.com/@hitabacokyou/JavaPortfolio?v=1
